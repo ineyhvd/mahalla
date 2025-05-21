@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahalla Ma'lumotlari</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome ikonkalar uchun -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .card-hover:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
+        <h1 class="text-2xl font-bold text-center mb-6 text-indigo-600">Mahalla Ma'lumotlari</h1>
+        
+        <!-- Qidirish formasi -->
+        <form method="GET" action="{% url 'home' %}">
+            <div class="mb-4">
+                <label for="viloyat" class="block text-sm font-medium text-gray-700">Viloyat</label>
+                <select id="viloyat" name="viloyat" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" onchange="this.form.submit()">
+                    <option value="">Viloyatni tanlang</option>
+                    {% for viloyat in viloyatlar %}
+                        <option value="{{ viloyat.id }}" {% if selected_viloyat == viloyat.id %}selected{% endif %}>
+                            {{ viloyat.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="tuman" class="block text-sm font-medium text-gray-700">Tuman</label>
+                <select id="tuman" name="tuman" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" {% if not viloyatlar %}disabled{% endif %} onchange="this.form.submit()">
+                    <option value="">Tumanni tanlang</option>
+                    {% for tuman in tumanlar %}
+                        <option value="{{ tuman.id }}" {% if selected_tuman == tuman.id %}selected{% endif %}>
+                            {{ tuman.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="mahalla" class="block text-sm font-medium text-gray-700">Mahalla nomi</label>
+                <input type="text" id="mahalla" name="mahalla" value="{{ mahalla_name }}" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Mahalla nomini kiriting">
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700">Qidirish</button>
+        </form>
+
+        <!-- Natijalar -->
+        <div id="results" class="mt-6">
+            {% if mahallalar is not None %}
+                {% if mahallalar %}
+                    {% for mahalla in mahallalar %}
+                        <div class="bg-gradient-to-r from-indigo-100 to-blue-100 p-6 rounded-lg shadow-lg mb-6 card-hover">
+                            <h3 class="text-xl font-bold text-indigo-800 mb-3">
+                                <i class="fas fa-map-marker-alt mr-2 text-indigo-600"></i>{{ mahalla.name }}
+                            </h3>
+                            <p class="text-gray-700 mb-2">
+                                <i class="fas fa-globe-asia mr-2 text-green-600"></i>
+                                <strong>Viloyat:</strong> {{ mahalla.tuman.viloyat.name }}
+                            </p>
+                            <p class="text-gray-700 mb-2">
+                                <i class="fas fa-city mr-2 text-blue-600"></i>
+                                <strong>Tuman:</strong> {{ mahalla.tuman.name }}
+                            </p>
+                            <p class="text-gray-700 mb-2">
+                                <i class="fas fa-users mr-2 text-yellow-600"></i>
+                                <strong>Aholi soni:</strong> {{ mahalla.population }}
+                            </p>
+                            <p class="text-gray-700">
+                                <i class="fas fa-home mr-2 text-red-600"></i>
+                                <strong>Uylar soni:</strong> {{ mahalla.houses }}
+                            </p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-red-500 text-center">Hech qanday mahalla topilmadi.</p>
+                {% endif %}
+            {% else %}
+                <p class="text-gray-500 text-center">Ma'lumotlarni ko‘rish uchun yuqoridagi filtrlar orqali qidiruvni amalga oshiring.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

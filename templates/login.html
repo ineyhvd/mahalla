@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Kirish</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold text-center mb-6">Kirish</h1>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="p-2 mb-2 text-sm {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %} rounded">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <span class="text-red-500 text-sm">{{ field.errors|join:", " }}</span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700">Kirish</button>
+        </form>
+        <p class="mt-4 text-center"><a href="{% url 'register' %}" class="text-blue-600 hover:underline">Ro‘yxatdan o‘tish</a></p>
+        <p class="mt-2 text-center"><a href="{% url 'logout' %}" class="text-blue-600 hover:underline">Chiqish</a></p>
+    </div>
+</body>
+</html> 
