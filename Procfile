@@ -1,1 +1,1 @@
-web: gunicorn ''mahalla.wsgi'
+web: gunicorn mahalla.wsgi
