@@ -38,4 +38,4 @@ class LoginView(View):
 def logout_view(request):
     logout(request)
     messages.success(request, 'Muvaffaqiyatli tizimdan chiqdingiz!')
-    return redirect('home')
+    return redirect('login')

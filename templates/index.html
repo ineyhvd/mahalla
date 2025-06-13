@@ -5,24 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mahalla Ma'lumotlari</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome ikonkalar uchun -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a, #60a5fa);
+        }
+        .card-hover {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
         .card-hover:hover {
             transform: translateY(-5px);
-            transition: transform 0.3s ease-in-out;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        .form-field {
+            transition: all 0.3s ease-in-out;
+        }
+        .form-field:focus {
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.2);
+        }
+        .btn-hover {
+            transition: all 0.3s ease-in-out;
+        }
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .logout-btn {
+            transition: all 0.3s ease-in-out;
+        }
+        .logout-btn:hover {
+            background-color: #b91c1c;
+            transform: translateY(-1px);
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
-        <h1 class="text-2xl font-bold text-center mb-6 text-indigo-600">Mahalla Ma'lumotlari</h1>
+<body class="min-h-screen flex flex-col items-center justify-center gradient-bg p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-3xl transform transition-all hover:scale-[1.02]">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-4xl font-extrabold text-blue-900">Mahalla Ma'lumotlari</h1>
+            <a href="{% url 'logout' %}" class="logout-btn bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700">
+                <i class="fas fa-sign-out-alt mr-2"></i>Chiqish
+            </a>
+        </div>
         
-        <!-- Qidirish formasi -->
-        <form method="GET" action="{% url 'home' %}">
-            <div class="mb-4">
-                <label for="viloyat" class="block text-sm font-medium text-gray-700">Viloyat</label>
-                <select id="viloyat" name="viloyat" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" onchange="this.form.submit()">
+        <form method="GET" action="{% url 'home' %}" class="space-y-6">
+            <div class="mb-6">
+                <label for="viloyat" class="block text-sm font-semibold text-gray-700 mb-2">Viloyat</label>
+                <select id="viloyat" name="viloyat" class="form-field mt-1 block w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-900" onchange="this.form.submit()">
                     <option value="">Viloyatni tanlang</option>
                     {% for viloyat in viloyatlar %}
                         <option value="{{ viloyat.id }}" {% if selected_viloyat == viloyat.id %}selected{% endif %}>
@@ -31,9 +61,9 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="mb-4">
-                <label for="tuman" class="block text-sm font-medium text-gray-700">Tuman</label>
-                <select id="tuman" name="tuman" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" {% if not viloyatlar %}disabled{% endif %} onchange="this.form.submit()">
+            <div class="mb-6">
+                <label for="tuman" class="block text-sm font-semibold text-gray-700 mb-2">Tuman</label>
+                <select id="tuman" name="tuman" class="form-field mt-1 block w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-900" {% if not viloyatlar %}disabled{% endif %} onchange="this.form.submit()">
                     <option value="">Tumanni tanlang</option>
                     {% for tuman in tumanlar %}
                         <option value="{{ tuman.id }}" {% if selected_tuman == tuman.id %}selected{% endif %}>
@@ -42,21 +72,21 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="mb-4">
-                <label for="mahalla" class="block text-sm font-medium text-gray-700">Mahalla nomi</label>
-                <input type="text" id="mahalla" name="mahalla" value="{{ mahalla_name }}" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Mahalla nomini kiriting">
+            <div class="mb-6">
+                <label for="mahalla" class="block text-sm font-semibold text-gray-700 mb-2">Mahalla nomi</label>
+                <input type="text" id="mahalla" name="mahalla" value="{{ mahalla_name }}" class="form-field mt-1 block w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-900" placeholder="Mahalla nomini kiriting">
             </div>
-            <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700">Qidirish</button>
+            <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-900 text-white p-3 rounded-lg font-semibold btn-hover">Qidirish</button>
         </form>
 
         <!-- Natijalar -->
-        <div id="results" class="mt-6">
+        <div id="results" class="mt-8">
             {% if mahallalar is not None %}
                 {% if mahallalar %}
                     {% for mahalla in mahallalar %}
-                        <div class="bg-gradient-to-r from-indigo-100 to-blue-100 p-6 rounded-lg shadow-lg mb-6 card-hover">
-                            <h3 class="text-xl font-bold text-indigo-800 mb-3">
-                                <i class="fas fa-map-marker-alt mr-2 text-indigo-600"></i>{{ mahalla.name }}
+                        <div class="bg-gradient-to-r from-blue-50 to-gray-100 p-6 rounded-xl shadow-lg mb-6 card-hover">
+                            <h3 class="text-xl font-bold text-blue-900 mb-3">
+                                <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>{{ mahalla.name }}
                             </h3>
                             <p class="text-gray-700 mb-2">
                                 <i class="fas fa-globe-asia mr-2 text-green-600"></i>
@@ -77,7 +107,7 @@
                         </div>
                     {% endfor %}
                 {% else %}
-                    <p class="text-red-500 text-center">Hech qanday mahalla topilmadi.</p>
+                    <p class="text-red-500 text-center font-semibold">Hech qanday mahalla topilmadi.</p>
                 {% endif %}
             {% else %}
                 <p class="text-gray-500 text-center">Ma'lumotlarni ko‘rish uchun yuqoridagi filtrlar orqali qidiruvni amalga oshiring.</p>

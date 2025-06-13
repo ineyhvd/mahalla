@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from django.views import View
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from .models import Viloyat, Tuman, Mahalla
 
-
+@method_decorator(login_required, name='dispatch')
 class HomeView(View):
     def get(self, request):
-        # Barcha viloyatlarni olish
         viloyatlar = Viloyat.objects.all()
 
-        # Tanlangan viloyat, tuman va mahalla nomini olish
         viloyat_id = request.GET.get('viloyat')
         tuman_id = request.GET.get('tuman')
         mahalla_name = request.GET.get('mahalla', '').strip()
@@ -20,7 +20,7 @@ class HomeView(View):
 
         # Mahallalarni faqat filtr qo‘llanilganda olish
         mahallalar = None
-        if viloyat_id or tuman_id or mahalla_name:  # Agar hech bo‘lmaganda bitta filtr qo‘llanilgan bo‘lsa
+        if viloyat_id or tuman_id or mahalla_name:
             mahallalar = Mahalla.objects.all()
             if viloyat_id:
                 mahallalar = mahallalar.filter(tuman__viloyat_id=viloyat_id)
